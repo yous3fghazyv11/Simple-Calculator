@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 
@@ -17,10 +18,6 @@ enum class Token_kind {
     help,
     num
 };
-
-inline extern constexpr char number = '8';
-inline extern constexpr char print = ';';
-inline extern constexpr char quit = 'q';
 
 class Token {
   public:
@@ -54,13 +51,13 @@ inline Token Token_stream::get() {
         full = false;
         return buffer;
     }
-    char tmp = '\0';
-    std::cin >> tmp;
+    char current_token = '\0';
+	std::cin >> current_token;
     if (!std::cin) {
         std::cout << "\nExiting...\n";
         exit(0);
     }
-    switch (tmp) {
+    switch (current_token) {
         case '+': return Token(Token_kind::plus);
         case '-': return Token(Token_kind::mins);
         case '*': return Token(Token_kind::mul);
@@ -80,16 +77,16 @@ inline Token Token_stream::get() {
         case '5':
         case '6':
         case '7':
-        case number:
+        case '8':
         case '9':
         case '.': {
-            std::cin.putback(tmp);
+            std::cin.putback(current_token);
             double val = 0;
             std::cin >> val;
             return Token(Token_kind::num, val);
         }
         default:
-            throw std::runtime_error("'" + std::string(1, tmp) +
+            throw std::runtime_error("'" + std::string(1, current_token) +
                                      "' unrecognized token");
     }
 }
