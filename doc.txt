@@ -1,0 +1,21 @@
+Simple calculator program
+auther: Yousef Ghazy
+This program implements recursive descent parsing algorithm to Perform baisc calculatiosn
+Grammar:
+ Expression:
+   Term;
+   Term + Term*;
+   Term - Term*;
+ Term:
+   Primary
+   Primary * Primary*
+   Primary / Primary*
+   Primary ^ Primary
+ Primary:
+   Number
+   Number!
+   (Expression)
+   (Expression)!
+   -Priamry
+ Number:
+   floating-point-literal
