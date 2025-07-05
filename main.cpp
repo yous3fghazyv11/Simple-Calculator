@@ -1,5 +1,7 @@
 #include "utils.h"
 #include <cmath>
+#include <ios>
+#include <limits>
 #include <stdexcept>
 
 Token_stream ts;
@@ -98,7 +100,6 @@ void calculate() {
             std::cout << "> ";
             Token t = ts.get();
             while (t.kind == Token_kind::print)
-                // first discard all "prints"
                 t = ts.get();
             if (t.kind == Token_kind::quit)
                 return;
@@ -110,7 +111,7 @@ void calculate() {
             std::cout << "= " << expression() << '\n';
         } catch (std::runtime_error &e) {
             std::cerr << e.what() << '\n';
-            // ts.ignore(print);
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), ';');
         }
     }
 }

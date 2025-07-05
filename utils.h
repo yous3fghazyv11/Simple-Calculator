@@ -30,7 +30,7 @@ class Token_stream {
   public:
     void putback(Token t);
     Token get();
-    void ignore(char ch);
+    void ignore(Token_kind k);
     Token_stream() : full{false}, buffer{Token_kind::print} {}
 
   private:
@@ -106,10 +106,8 @@ inline void help() {
         std::cerr << "cannot open doc.txt\n";
         return;
     }
-
     constexpr std::size_t buf_sz = 4096;
     char buffer[buf_sz];
-
     while (in.read(buffer, buf_sz) || in.gcount()) {
         std::cout.write(buffer, in.gcount());
     }
