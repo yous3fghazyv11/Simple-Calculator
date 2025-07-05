@@ -146,6 +146,8 @@ void calculate() {
 }
 
 int main() try {
+    define_name("pi", 3.14);
+    define_name("e", 2.7);
     calculate();
     return 0;
 } catch (std::runtime_error &e) {
