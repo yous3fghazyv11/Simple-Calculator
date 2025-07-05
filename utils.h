@@ -31,7 +31,6 @@ class Token_stream {
     void putback(Token t);
     Token get();
     Token_stream() : full{false}, buffer{Token_kind::print} {}
-
   private:
     bool full = false;
     Token buffer;
@@ -40,6 +39,9 @@ class Token_stream {
 extern Token_stream ts;
 
 inline void Token_stream::putback(Token t) {
+	if (full) {
+		throw std::runtime_error("putback into full buffer");
+	}
     buffer = t;
     full = true;
 }
@@ -50,24 +52,35 @@ inline Token Token_stream::get() {
         return buffer;
     }
     char current_token = '\0';
-	std::cin >> current_token;
+    std::cin >> current_token;
     if (!std::cin) {
         std::cout << "\nExiting...\n";
         exit(0);
     }
     switch (current_token) {
-        case '+': return Token(Token_kind::plus);
-        case '-': return Token(Token_kind::mins);
-        case '*': return Token(Token_kind::mul);
-        case '/': return Token(Token_kind::div);
-        case 'q': return Token(Token_kind::quit);
-        case ';': return Token(Token_kind::print);
-        case '(': return Token(Token_kind::obrace);
-        case ')': return Token(Token_kind::cbrace);
-        case '!': return Token(Token_kind::fac);
-        case '^': return Token(Token_kind::pow);
-        case 'h': return Token(Token_kind::help);
-        case '0':
+        case '+':
+            return Token(Token_kind::plus);
+        case '-':
+            return Token(Token_kind::mins);
+        case '*':
+            return Token(Token_kind::mul);
+        case '/':
+            return Token(Token_kind::div);
+        case 'q':
+            return Token(Token_kind::quit);
+        case ';':
+            return Token(Token_kind::print);
+        case '(':
+            return Token(Token_kind::obrace);
+        case ')':
+            return Token(Token_kind::cbrace);
+        case '!':
+            return Token(Token_kind::fac);
+        case '^':
+            return Token(Token_kind::pow);
+        case 'h':
+            return Token(Token_kind::help);
+		case '0': // case of number literal
         case '1':
         case '2':
         case '3':
@@ -78,9 +91,9 @@ inline Token Token_stream::get() {
         case '8':
         case '9':
         case '.': {
-            std::cin.putback(current_token);
+            std::cin.putback(current_token); // putback the number
             double val = 0;
-            std::cin >> val;
+            std::cin >> val; // read a full double
             return Token(Token_kind::num, val);
         }
         default:
@@ -99,7 +112,7 @@ inline double fac(double n) {
     return result;
 }
 
-inline void help() {
+inline void help() { // prints help from file dec.txt
     std::ifstream in{"doc.txt", std::ios::binary};
     if (!in) {
         std::cerr << "cannot open doc.txt\n";

@@ -15,15 +15,15 @@ double expression() {
     Token next = ts.get();
     while (true) {
         switch (next.kind) {
-            case Token_kind::plus:
+            case Token_kind::plus: // handle +
                 left += term();
                 next = ts.get();
                 break;
-            case Token_kind::mins:
+            case Token_kind::mins: // handle -
                 left -= term();
                 next = ts.get();
                 break;
-            default:
+            default: // no more + or -, return left
                 ts.putback(next);
                 return left;
         }
@@ -35,11 +35,11 @@ double term() {
     Token next = ts.get();
     while (true) {
         switch (next.kind) {
-            case Token_kind::mul:
+            case Token_kind::mul: // handle *
                 left *= primary();
                 next = ts.get();
                 break;
-            case Token_kind::div: {
+            case Token_kind::div: { // handle /
                 double d = primary();
                 if (d == 0) {
                     throw std::runtime_error("division by zero");
@@ -48,7 +48,7 @@ double term() {
                 next = ts.get();
                 break;
             }
-            case Token_kind::pow:
+            case Token_kind::pow: // handle ^
                 left = std::pow(left, primary());
                 next = ts.get();
                 break;
@@ -62,7 +62,7 @@ double term() {
 double primary() {
     Token t = ts.get();
     switch (t.kind) {
-        case Token_kind::num: {
+        case Token_kind::num: { // simple number
             Token next = ts.get();
             if (next.kind == Token_kind::fac) {
                 return fac(t.value);
@@ -70,20 +70,18 @@ double primary() {
             ts.putback(next);
             return t.value;
         }
-        case Token_kind::mins: {
+        case Token_kind::mins: // handle negative numbers
             return -1 * primary();
-        }
-        case Token_kind::plus: {
+        case Token_kind::plus: // handle positive numbers
             return primary();
-        }
-        case Token_kind::obrace: {
-            double left = expression();
+        case Token_kind::obrace: { // handle open braces
+            double left = expression(); // get value of expression inside
             Token next = ts.get();
-            if (next.kind != Token_kind::fac) {
+            if (next.kind != Token_kind::cbrace) { // obrace must have cbrace
                 throw std::runtime_error("')' Exprected");
             }
             Token is_fac = ts.get();
-            if (is_fac.kind == Token_kind::fac) {
+            if (is_fac.kind == Token_kind::fac) { // handle factorial of expression inside braces
                 return fac(left);
             }
             ts.putback(is_fac);
@@ -103,7 +101,7 @@ void calculate() {
                 t = ts.get();
             if (t.kind == Token_kind::quit)
                 return;
-            if (t.kind == Token_kind::print) {
+            if (t.kind == Token_kind::help) {
                 help();
                 continue;
             }
