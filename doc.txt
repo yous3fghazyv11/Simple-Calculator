@@ -2,10 +2,15 @@ Simple calculator program
 auther: Yousef Ghazy
 This program implements recursive descent parsing algorithm to Perform baisc calculatiosn
 Grammar:
+ Statement:
+   Declaration;
+   Expression;
+ Declaration:
+   let name = Expression;
  Expression:
-   Term;
-   Term + Term*;
-   Term - Term*;
+   Term
+   Term + Term*
+   Term - Term*
  Term:
    Primary
    Primary * Primary*

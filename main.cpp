@@ -1,4 +1,6 @@
 #include "utils.h"
+#include "var.h"
+#include "token.h"
 #include <cmath>
 #include <ios>
 #include <limits>
@@ -6,9 +8,37 @@
 
 Token_stream ts;
 
+double statement();
+double declaration();
 double expression();
 double term();
 double primary();
+
+double statement() {
+    Token next = ts.get(); 
+    switch (next.kind) { 
+    case Token_kind::let: // handels "let" keyword and executes declaration
+        return declaration();
+        break;
+    default:
+        ts.putback(next);
+        return expression(); // if not "let", handle normal expression
+    }
+}
+
+double declaration() { // we assume that we've already seen "let"
+    Token var = ts.get();
+    if (var.kind != Token_kind::name) { // after let there should come a name token
+        throw std::runtime_error("expected a variable name");
+    }
+
+    Token next = ts.get();
+    if (next.kind != Token_kind::equal) { // after the name there should be equal token
+        throw std::runtime_error("'=' expected");
+    }
+    double d = expression(); // get the expression that is going to be the value of the variable
+    return define_name(var.name, d);
+}
 
 double expression() {
     double left = term();
@@ -87,6 +117,7 @@ double primary() {
             ts.putback(is_fac);
             return left;
         }
+        case Token_kind::name: return get_value(t.name);
         default:
             throw std::runtime_error("primary expected");
     }
@@ -106,7 +137,7 @@ void calculate() {
                 continue;
             }
             ts.putback(t);
-            std::cout << "= " << expression() << '\n';
+            std::cout << "= " << statement() << '\n';
         } catch (std::runtime_error &e) {
             std::cerr << e.what() << '\n';
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), ';');
