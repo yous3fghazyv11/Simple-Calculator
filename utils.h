@@ -30,7 +30,6 @@ class Token_stream {
   public:
     void putback(Token t);
     Token get();
-    void ignore(Token_kind k);
     Token_stream() : full{false}, buffer{Token_kind::print} {}
 
   private:
