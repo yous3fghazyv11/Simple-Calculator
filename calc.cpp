@@ -47,6 +47,7 @@ void repl() {
 }
 
 void read_from_file(char *name) {
+    std::cout << "reading from file: " << std::string(name) << '\n';
     std::string line;
     std::ifstream file{name};
     if (!file) {
@@ -54,7 +55,7 @@ void read_from_file(char *name) {
     }
     while (std::getline(file, line)) {
         try {
-            std::cout << '\n' << line << '\n';
+            std::cout << "Expression: " << line << '\n';
             std::stringstream line_buffer{line}; // turn that line into a string stream
             Token_stream ts(line_buffer);        // turn that string stream (originally just input line) into a token stream
             Token t = ts.get();
@@ -70,7 +71,7 @@ void read_from_file(char *name) {
                 std::cerr << RED << "invalid expression\n" << WHITE;
                 continue;
             }
-            std::cout << GREEN << result << WHITE << '\n';
+            std::cout << "output: " << GREEN << result << WHITE << '\n';
         } catch (std::exception &e) {
             std::cerr << RED << e.what() << WHITE << '\n';
         }

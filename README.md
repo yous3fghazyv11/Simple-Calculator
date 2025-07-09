@@ -24,5 +24,7 @@ $ calc
 or, if you have a file called e.g. test.txt with `3 + 3` as its contents, you can use:
 ```
 $ calc test.txt
-6
+reading from file: test.txt
+Expression: 3 + 3
+output: 6
 ```
