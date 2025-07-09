@@ -30,10 +30,14 @@ double term(Token_stream &ts) {
                 left *= primary(ts);
                 next = ts.get();
                 break;
-            case Kind::div:
-                left /= primary(ts);
+            case Kind::div: {
+                double val = primary(ts);
+                if (val == 0)
+                    throw std::runtime_error("divison by zero");
+                left /= val;
                 next = ts.get();
                 break;
+            }
             default:
                 ts.putback(next);
                 return left;
@@ -55,6 +59,6 @@ double primary(Token_stream &ts) {
             return left;
         }
         default:
-            throw std::runtime_error("primary expected");
+            throw std::runtime_error("invalid epxression");
     }
 }
