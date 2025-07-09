@@ -21,7 +21,7 @@ $ calc
 > 3 + 3
 6
 ```
-or
+or, if you have a file called e.g. text.txt with `3 + 3` as its contents, you can use:
 ```
 $ calc test.txt
 6
