@@ -16,13 +16,13 @@ $ sudo make run clean # compiles and runs the program
 ```
 ## usage
 you can use the calculator as a REPL or you can provide an input file as an argument
-``` bash
+```
 $ calc
 > 3 + 3
 6
 ```
 or, if you have a file called e.g. test.txt with `3 + 3` as its contents, you can use:
-``` bash
+```
 $ calc test.txt
 6
 ```
