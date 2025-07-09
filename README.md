@@ -1,7 +1,7 @@
 # Simple calculator
 Simple yet powerful and easy to use CLI calculator written in C++
 ## installation
-to install the calculator on linux you can use the following commands
+to install the calculator on Linux you can use the following commands
 ``` bash
 $ git clone https://github.com/yous3fghazyv11/Simple-Calculator
 $ cd Simple-Calculator/
