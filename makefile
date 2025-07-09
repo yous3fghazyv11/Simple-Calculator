@@ -1,16 +1,24 @@
 CC = g++
-
-CFLAGS = -Wall -W -std=c++23
-
+CFLAGS = -Wall -Wextra -std=c++23
 TARGET = calc
+SRCS = calc.cpp parser.cpp token.cpp
+OBJS = $(SRCS:.cpp=.o)
+
+.PHONY: all clean run install
 
 all: $(TARGET)
 
-$(TARGET): calc.cpp
-	@$(CC) $(CFLAGS) -o $(TARGET) calc.cpp > /dev/null 2>&1
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^
+
+%.o: %.cpp
+	$(CC) $(CFLAGS) -c $< -o $@
 
 run: all
-	@./$(TARGET)
+	./$(TARGET)
+
+install: all
+	sudo cp $(TARGET) /usr/bin/
 
 clean:
-	@rm -rf $(TARGET)
+	rm -f $(TARGET) $(OBJS)
