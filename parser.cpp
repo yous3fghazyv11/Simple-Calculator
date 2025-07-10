@@ -29,7 +29,7 @@ double declaration(Token_stream &ts)
 {
     Token next = ts.get();
     if (next.kind != Kind::name)
-        throw std::runtime_error("expceted name");
+        throw std::runtime_error("expceted a name");
     if (ts.get().kind != Kind::eq)
         throw std::runtime_error("expected '='");
     return define_var(next.name, expression(ts));
