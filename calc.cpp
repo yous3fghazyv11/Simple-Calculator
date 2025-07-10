@@ -82,6 +82,7 @@ void read_from_file(char *name) {
 int main(int argc, char *argv[]) try {
     define_var("pi", 22.0/7);
     define_var("e", 2.71828);
+    std::cout << "type 'q' to exit\n";
     if (argc == 1) {
         repl();
     } else if (argc == 2) {
