@@ -44,6 +44,8 @@ Token Token_stream::get() {
         }
         if (name == "let")
             return Token(Kind::dec);
+        if (name == "quit")
+            return Token(Kind::quit);
         return Token(Kind::name, name);
     }
     throw std::runtime_error("bad token: " + std::string(1, ch));
