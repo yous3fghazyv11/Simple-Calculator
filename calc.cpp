@@ -38,6 +38,7 @@ void repl() {
                 std::cerr << RED << "invalid expression\n" << WHITE;
                 continue;
             }
+            set_value("ans", result);
             std::cout << GREEN << result << WHITE << '\n';
         } catch (std::exception &e) {
             std::cerr << RED << e.what() << WHITE << '\n';
@@ -78,6 +79,7 @@ void read_from_file(char *name) {
 int main(int argc, char *argv[]) try {
     define_var("pi", 22.0/7);
     define_var("e", 2.71828);
+    define_var("ans", 0);
     std::cout << "type 'q' or 'quit' to exit\n";
     if (argc > 1) {
         read_from_file(argv[1]);
