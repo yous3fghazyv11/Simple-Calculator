@@ -8,16 +8,29 @@
 double statement(Token_stream &ts)
 /*
  * Statement:
- *   declaration
+ *   Declaration
+ *   var_name = Statement
  *   Expression
  */
 {
     Token next = ts.get();
-    if (next.kind == Kind::dec) {
-        return declaration(ts);
-    } else {
-        ts.putback(next);
-        return expression(ts);
+    switch (next.kind) {
+        case Kind::dec:
+            return declaration(ts);
+        case Kind::name: {
+            Token is_equal = ts.get();
+            if (is_equal.kind == Kind::eq) {
+                double val = statement(ts);
+                set_value(next.name, val);
+                return val;
+            }
+            ts.putback(is_equal);
+            ts.putback(next);
+            return expression(ts);
+        }
+        default:
+            ts.putback(next);
+            return expression(ts);
     }
 }
 
