@@ -9,26 +9,28 @@ double statement(Token_stream &ts)
 /*
  * Statement:
  *   Declaration
- *   var_name = Statement
+ *   Assignment
  *   Expression
  */
 {
     Token next = ts.get();
     switch (next.kind) {
-        case Kind::dec:
+        case Kind::dec: // checks for let, if yes, it's a declaration
             return declaration(ts);
-        case Kind::name: {
+        case Kind::name: { // checks for a name
             Token is_equal = ts.get();
             if (is_equal.kind == Kind::eq) {
-                double val = statement(ts);
-                set_value(next.name, val);
-                return val;
+                // checks for '=' after a name, if yes, it's an assignment
+                return assignment(next.name, ts);
             }
+            // if not an assignment, meaning that the name was not followed by
+            // a '=', putback the name and the token that was supposed to be '='
             ts.putback(is_equal);
             ts.putback(next);
             return expression(ts);
         }
         default:
+            // if not a declaration or assignment, try parse expression normally
             ts.putback(next);
             return expression(ts);
     }
@@ -45,7 +47,20 @@ double declaration(Token_stream &ts)
         throw std::runtime_error("expceted a name");
     if (ts.get().kind != Kind::eq)
         throw std::runtime_error("expected '='");
-    return define_var(next.name, expression(ts));
+    if (is_defined(next.name))
+        throw std::runtime_error("can't define more than once");
+    return define_var(next.name, statement(ts));
+}
+
+double assignment(const std::string name, Token_stream &ts)
+/*
+ * Assignment:
+ *   name = Expression
+ */
+{
+    double val = expression(ts);
+    set_value(name, val);
+    return val;
 }
 
 double expression(Token_stream &ts)

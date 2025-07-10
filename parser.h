@@ -7,3 +7,4 @@ double primary(Token_stream &ts);
 double value(Token_stream &ts);
 double statement(Token_stream &ts);
 double declaration(Token_stream& ts);
+double assignment(const std::string name, Token_stream &ts);

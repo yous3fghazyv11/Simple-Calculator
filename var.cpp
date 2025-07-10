@@ -25,3 +25,12 @@ double define_var(const std::string& name, double val) {
     var_table.push_back(Var(name, val));
     return val;
 }
+
+bool is_defined(const std::string& name) {
+    for (Var v : var_table) {
+        if (v.name == name) {
+            return true;
+        }
+    }
+    return false;
+}
