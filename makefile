@@ -1,10 +1,14 @@
-CC = g++
-CFLAGS = -Wall -Wextra -std=c++23
-TARGET = calc
-SRCS = calc.cpp parser.cpp token.cpp var.cpp
-OBJS = $(SRCS:.cpp=.o)
+CC      = g++
+CFLAGS  = -Wall -Wextra -std=c++23
+TARGET  = calc
 
-.PHONY: all clean run install
+SRCS    = calc.cpp parser.cpp token.cpp var.cpp
+OBJS    = $(SRCS:.cpp=.o)
+
+CONFIG_DIR := $(HOME)/.config/calc
+CONFIG_FILE := $(CONFIG_DIR)/calc
+
+.PHONY: all clean run install uninstall
 
 all: $(TARGET)
 
@@ -18,7 +22,16 @@ run: all
 	./$(TARGET)
 
 install: all
+	@echo "→ Installing $(TARGET) to /usr/bin and creating config directory"
 	sudo cp $(TARGET) /usr/bin/
+	@mkdir -p "$(CONFIG_DIR)"
+	@[ -f "$(CONFIG_FILE)" ] || echo "# calc configuration" > "$(CONFIG_FILE)"
+	@echo "   Config file is at $(CONFIG_FILE)"
+
+uninstall:
+	@echo "→ Removing /usr/bin/$(TARGET) and config directory"
+	@sudo rm -f /usr/bin/$(TARGET)
+	@rm -rf "$(CONFIG_DIR)"
 
 clean:
 	rm -f $(TARGET) $(OBJS)

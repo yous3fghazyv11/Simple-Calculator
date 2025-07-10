@@ -58,7 +58,7 @@ double assignment(const std::string name, Token_stream &ts)
  *   name = Expression
  */
 {
-    double val = expression(ts);
+    double val = statement(ts);
     set_value(name, val);
     return val;
 }

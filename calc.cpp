@@ -13,7 +13,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <stdexcept>
+#include <cstdlib>
 
 #define GREEN "\033[92m"
 #define RED "\033[33m"
@@ -32,6 +32,9 @@ void repl() {
             if (t.kind == Kind::eoe) { // if the user didn't type anything
                 continue;
             }
+            if (t.kind == Kind::com) { // this line is a comment
+                continue;
+            }
             ts.putback(t); // if none of the above then put it back to read a statement
             double result = statement(ts);
             if (ts.get().kind != Kind::eoe) { // make sure that there's no garbage after a statement
@@ -46,44 +49,46 @@ void repl() {
     }
 }
 
-void read_from_file(char *name) {
-    std::cout << "reading from file: " << std::string(name) << '\n';
+void read_config() {
     std::string line;
-    std::ifstream file{name};
+    std::string config_path = std::string(std::getenv("HOME")) + "/.config/calc/calc";
+    std::ifstream file{config_path};
     if (!file) {
-        throw std::runtime_error("can't open file: " + std::string(name));
+        std::cerr << "can't find config file in: " << config_path << '\n';
+        return;
     }
     while (std::getline(file, line)) {
         try {
             std::stringstream line_buffer{line}; // turn that line into a string stream
             Token_stream ts(line_buffer);        // turn that string stream (originally just input line) into a token stream
             Token t = ts.get();
-            if (t.kind == Kind::eoe) { // if the user didn't type anything
+            if (t.kind == Kind::com) { // this line is a comment
                 continue;
+            } else {
+                ts.putback(t);
             }
-            ts.putback(t); // if none of the above then put it back to read an expression
-            double result = statement(ts);
+            statement(ts);
+            // double result = statement(ts);
             if (ts.get().kind != Kind::eoe) { // make sure that there's no garbage after the expression
-                std::cerr << RED << "error in file: " << name << WHITE;
+                std::cerr << RED << "error in config file: " << config_path << WHITE;
                 std::cerr << RED << "invalid expression: " << line << WHITE;
                 continue;
             }
-            std::cout << "expression: " << line << '\n';
-            std::cout << "output: " << GREEN << result << WHITE << '\n';
+            // std::cout << "expression: " << line << '\n';
+            // std::cout << "output: " << result << '\n';
         } catch (std::exception &e) {
             std::cerr << RED << e.what() << WHITE << '\n';
         }
     }
+    std::cout << "config file read done\n";
 }
 
-int main(int argc, char *argv[]) try {
+int main() try {
     define_var("pi", 22.0/7);
     define_var("e", 2.71828);
     define_var("ans", 0);
     std::cout << "type 'q' or 'quit' to exit\n";
-    if (argc > 1) {
-        read_from_file(argv[1]);
-    }
+    read_config();
     repl();
     return 0;
 } catch (std::exception &e) {

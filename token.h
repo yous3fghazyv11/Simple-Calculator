@@ -17,6 +17,7 @@ enum class Kind {
     fac = '!',
     mod = '%',
     eq = '=',
+    com = '#',
     name,
     dec,
     eoe // eoe means end of expression

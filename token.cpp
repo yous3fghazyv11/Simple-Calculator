@@ -29,6 +29,7 @@ Token Token_stream::get() {
     if (ch == '%') return Token(Kind::mod);
     if (ch == 'q') return Token(Kind::quit);
     if (ch == '=') return Token(Kind::eq);
+    if (ch == '#') return Token(Kind::com);
     if (isdigit(ch) || ch == '.') { // case of a digit
         in.putback(ch);             // put back the character
         double val;
