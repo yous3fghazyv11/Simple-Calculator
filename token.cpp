@@ -1,4 +1,5 @@
 #include "token.h"
+#include <cctype>
 #include <stdexcept>
 #include <string>
 
@@ -14,49 +15,37 @@ Token Token_stream::get() {
         full = false;
         return buffer;
     }
-    char current_token;
-    in >> current_token;
-    if (in.eof()) { // stream ended
+    char ch;
+    in >> ch;
+    if (in.eof()) {              // stream ended
         return Token(Kind::eoe); // signal eoe, check for it in main
     }
-    switch (current_token) {
-        case '+':
-            return Token(Kind::pls);
-        case '-':
-            return Token(Kind::mins);
-        case '*':
-            return Token(Kind::mul);
-        case '/':
-            return Token(Kind::div);
-        case '^':
-            return Token(Kind::pow);
-        case '(':
-            return Token(Kind::obrace);
-        case ')':
-            return Token(Kind::cbrace);
-        case '!':
-            return Token(Kind::fac);
-        case '%':
-            return Token(Kind::mod);
-        case 'q':
-            return Token(Kind::quit);
-        case '0': // case of a digit
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-        case '.': {
-            in.putback(current_token); // put back the character
-            double val;
-            in >> val; // try to read a double
-            return Token(Kind::num, val);
-        }
-        default:
-            throw std::runtime_error("'" + std::string(1, current_token) + "' is undefined");
+    if (ch == '+') return Token(Kind::pls);
+    if (ch == '-') return Token(Kind::mins);
+    if (ch == '*') return Token(Kind::mul);
+    if (ch == '/') return Token(Kind::div);
+    if (ch == '^') return Token(Kind::pow);
+    if (ch == '(') return Token(Kind::obrace);
+    if (ch == ')') return Token(Kind::cbrace);
+    if (ch == '!') return Token(Kind::fac);
+    if (ch == '%') return Token(Kind::mod);
+    if (ch == 'q') return Token(Kind::quit);
+    if (isdigit(ch) || ch == '.') { // case of a digit
+        in.putback(ch);             // put back the character
+        double val;
+        in >> val; // try to read a double
+        return Token(Kind::num, val);
     }
+    std::string name;
+    if (std::isalpha(static_cast<unsigned char>(ch))) { // case of a name
+        name += ch;
+        while (std::isalpha(static_cast<unsigned char>(in.peek()))) {
+            in.get(ch);
+            name += ch;
+        }
+        if (name == "xyz")
+            return Token(Kind::num, 3);
+        throw std::runtime_error(name + " is undefiened");
+    }
+    throw std::runtime_error("bad token: " + std::string(1, ch));
 }
