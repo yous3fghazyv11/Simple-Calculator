@@ -6,7 +6,7 @@ SRCS    = calc.cpp parser.cpp token.cpp var.cpp
 OBJS    = $(SRCS:.cpp=.o)
 
 CONFIG_DIR := $(HOME)/.config/calc
-CONFIG_FILE := $(CONFIG_DIR)/calc
+CONFIG_FILE := $(CONFIG_DIR)/calc.conf
 
 .PHONY: all clean run install uninstall
 

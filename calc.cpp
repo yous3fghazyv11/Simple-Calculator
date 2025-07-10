@@ -20,6 +20,7 @@
 #define WHITE "\033[0m"
 
 void repl() {
+    std::cout << "type 'q' or 'quit' to exit\n";
     for (std::string line; std::cout << "> " && std::getline(std::cin, line);) { // get line from the user
         try {
             std::stringstream line_buffer{line}; // turn that line into a string stream
@@ -51,7 +52,7 @@ void repl() {
 
 void read_config() {
     std::string line;
-    std::string config_path = std::string(std::getenv("HOME")) + "/.config/calc/calc";
+    std::string config_path = std::string(std::getenv("HOME")) + "/.config/calc/calc.conf";
     std::ifstream file{config_path};
     if (!file) {
         std::cerr << "can't find config file in: " << config_path << '\n';
@@ -63,6 +64,8 @@ void read_config() {
             Token_stream ts(line_buffer);        // turn that string stream (originally just input line) into a token stream
             Token t = ts.get();
             if (t.kind == Kind::com) { // this line is a comment
+                continue;
+            } else if (t.kind == Kind::eoe) { // line is empty
                 continue;
             } else {
                 ts.putback(t);
@@ -80,14 +83,10 @@ void read_config() {
             std::cerr << RED << e.what() << WHITE << '\n';
         }
     }
-    std::cout << "config file read done\n";
 }
 
 int main() try {
-    define_var("pi", 22.0/7);
-    define_var("e", 2.71828);
     define_var("ans", 0);
-    std::cout << "type 'q' or 'quit' to exit\n";
     read_config();
     repl();
     return 0;
