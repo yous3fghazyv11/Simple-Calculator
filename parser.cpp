@@ -35,7 +35,7 @@ double term(Token_stream &ts)
  *   Primary * Primary*
  *   Primary / Primary*
  *   Primary % Primary*
- *   Primary ^ Primary*
+ *   Primary ^ Primary
  */    
 {
     double left = primary(ts);
@@ -62,6 +62,8 @@ double term(Token_stream &ts)
                 next = ts.get();
                 break;
             }
+            case Kind::pow:
+                return std::pow(left, primary(ts));
             default:
                 ts.putback(next);
                 return left;

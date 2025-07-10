@@ -28,6 +28,8 @@ Token Token_stream::get() {
             return Token(Kind::mul);
         case '/':
             return Token(Kind::div);
+        case '^':
+            return Token(Kind::pow);
         case '(':
             return Token(Kind::obrace);
         case ')':

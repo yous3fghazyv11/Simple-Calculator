@@ -9,6 +9,7 @@ enum class Kind {
     mins = '-',
     mul = '*',
     div = '/',
+    pow = '^',
     obrace = '(',
     cbrace = ')',
     quit = 'q',
