@@ -1,7 +1,7 @@
 #pragma once
 
-#include <istream>
 #include <iostream>
+#include <istream>
 
 enum class Kind {
     num,
@@ -12,7 +12,8 @@ enum class Kind {
     obrace = '(',
     cbrace = ')',
     quit = 'q',
-    eoe
+    eoe // eoe means end of expression
+    // signaled by Token_stream::get() and used in main to check garbage after an expression
 };
 
 class Token {
@@ -25,10 +26,10 @@ class Token {
 
 class Token_stream {
   public:
-    std::istream& in;
-    Token get();
-    void putback(Token t);
-    Token_stream(std::istream& s) : in(s), buffer(Kind::quit), full(false) {}
+    std::istream &in;      // a token stream tokenizes an input stream
+    Token get();           // get a token from the stream
+    void putback(Token t); // put a token back
+    Token_stream(std::istream &s) : in(s), buffer(Kind::quit), full(false) {}
 
   private:
     Token buffer;

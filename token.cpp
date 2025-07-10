@@ -1,5 +1,6 @@
 #include "token.h"
 #include <stdexcept>
+#include <string>
 
 void Token_stream::putback(Token t) {
     if (full)
@@ -9,14 +10,14 @@ void Token_stream::putback(Token t) {
 }
 
 Token Token_stream::get() {
-        if (full) {
+    if (full) {
         full = false;
         return buffer;
     }
     char current_token;
     in >> current_token;
-    if (in.eof()) {
-        return Token(Kind::eoe);
+    if (in.eof()) { // stream ended
+        return Token(Kind::eoe); // signal eoe, check for it in main
     }
     switch (current_token) {
         case '+':
@@ -33,7 +34,7 @@ Token Token_stream::get() {
             return Token(Kind::cbrace);
         case 'q':
             return Token(Kind::quit);
-        case '0':
+        case '0': // case of a digit
         case '1':
         case '2':
         case '3':
@@ -44,12 +45,12 @@ Token Token_stream::get() {
         case '8':
         case '9':
         case '.': {
-            in.putback(current_token);
+            in.putback(current_token); // put back the character
             double val;
-            in >> val;
+            in >> val; // try to read a double
             return Token(Kind::num, val);
         }
         default:
-            throw std::runtime_error("bad token");
+            throw std::runtime_error("'" + std::string(1, current_token) + "' is undefined");
     }
 }
