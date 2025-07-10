@@ -57,6 +57,10 @@ double primary(Token_stream &ts) {
             ts.putback(is_fac);
             return next.value;
         }
+        case Kind::pls:
+            return primary(ts);
+        case Kind::mins:
+            return -1 * primary(ts);
         case Kind::obrace: {
             double left = expression(ts);
             next = ts.get();
