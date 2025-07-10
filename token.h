@@ -12,6 +12,7 @@ enum class Kind {
     obrace = '(',
     cbrace = ')',
     quit = 'q',
+    fac = '!',
     eoe // eoe means end of expression
     // signaled by Token_stream::get() and used in main to check garbage after an expression
 };
