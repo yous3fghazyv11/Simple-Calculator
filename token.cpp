@@ -36,9 +36,9 @@ Token Token_stream::get() {
         return Token(Kind::num, val);
     }
     std::string name;
-    if (std::isalpha(static_cast<unsigned char>(ch))) { // case of a name
+    if (std::isalpha(static_cast<unsigned char>(ch)) || ch == '_') { // case of a name
         name += ch;
-        while (std::isalpha(static_cast<unsigned char>(in.peek()))) {
+        while (std::isalpha(static_cast<unsigned char>(in.peek())) || in.peek() == '_') {
             in.get(ch);
             name += ch;
         }
