@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -Wall -Wextra -std=c++23
 TARGET = calc
-SRCS = calc.cpp parser.cpp token.cpp
+SRCS = calc.cpp parser.cpp token.cpp var.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 .PHONY: all clean run install

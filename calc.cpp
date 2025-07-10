@@ -33,7 +33,7 @@ void repl() {
             }
             ts.putback(t); // if none of the above then put it back to read an
                            // expression
-            double result = expression(ts);
+            double result = statement(ts);
             if (ts.get().kind != Kind::eoe) { // make sure that there's no
                                               // garbage after the expression
                 std::cerr << RED << "invalid expression\n" << WHITE;

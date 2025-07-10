@@ -30,6 +30,7 @@ Token Token_stream::get() {
     if (ch == '!') return Token(Kind::fac);
     if (ch == '%') return Token(Kind::mod);
     if (ch == 'q') return Token(Kind::quit);
+    if (ch == '=') return Token(Kind::eq);
     if (isdigit(ch) || ch == '.') { // case of a digit
         in.putback(ch);             // put back the character
         double val;
@@ -43,9 +44,9 @@ Token Token_stream::get() {
             in.get(ch);
             name += ch;
         }
-        if (name == "xyz")
-            return Token(Kind::num, 3);
-        throw std::runtime_error(name + " is undefiened");
+        if (name == "let")
+            return Token(Kind::dec);
+        return Token(Kind::name, name);
     }
     throw std::runtime_error("bad token: " + std::string(1, ch));
 }

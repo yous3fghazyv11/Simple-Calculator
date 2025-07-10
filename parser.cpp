@@ -1,7 +1,39 @@
 #include "parser.h"
+#include "token.h"
 #include "utils.h"
+#include "var.h"
 #include <cmath>
 #include <stdexcept>
+
+double statement(Token_stream &ts)
+/*
+ * Statement:
+ *   declaration
+ *   Expression
+ */
+{
+    Token next = ts.get();
+    if (next.kind == Kind::dec) {
+        return declaration(ts);
+    } else {
+        ts.putback(next);
+        return expression(ts);
+    }
+}
+
+double declaration(Token_stream &ts)
+/*
+ * Declaration:
+ *   let name = Expression
+ */
+{
+    Token next = ts.get();
+    if (next.kind != Kind::name)
+        throw std::runtime_error("expceted name");
+    if (ts.get().kind != Kind::eq)
+        throw std::runtime_error("expected '='");
+    return define_var(next.name, expression(ts));
+}
 
 double expression(Token_stream &ts)
 /*
@@ -9,7 +41,7 @@ double expression(Token_stream &ts)
  *   Term
  *   Term + Term*
  *   Term - Term*
- */    
+ */
 {
     double left = term(ts);
     Token next = ts.get();
@@ -38,7 +70,7 @@ double term(Token_stream &ts)
  *   Primary / Primary*
  *   Primary % Primary*
  *   Primary ^ Primary
- */    
+ */
 {
     double left = primary(ts);
     Token next = ts.get();
@@ -76,41 +108,66 @@ double term(Token_stream &ts)
 double primary(Token_stream &ts)
 /*
  * Primary:
- *   Number
- *   Number!
- *   +Number
- *   -Number
+ *   Value
+ *   Value!
+ *   +Value
+ *   -Value
  *   (Expression)
  *   (Expression)!
- */    
+ */
 {
     Token next = ts.get();
     switch (next.kind) {
-        case Kind::num: {
-            Token is_fac = ts.get();
-            if (is_fac.kind == Kind::fac) {
-                return factorial(next.value);
-            }
-            ts.putback(is_fac);
-            return next.value;
-        }
-        case Kind::pls:
-            return primary(ts);
-        case Kind::mins:
-            return -1 * primary(ts);
         case Kind::obrace: {
             double inside = expression(ts);
             next = ts.get();
             if (next.kind != Kind::cbrace)
-                throw std::runtime_error("')' expceted");
-            Token is_fac = ts.get();
-            if (is_fac.kind == Kind::fac) {
+                throw std::runtime_error("')' expected");
+            next = ts.get();
+            if (next.kind == Kind::fac) {
+                if (std::floor(inside) != inside) {
+                    throw std::runtime_error("factorial of non-integer not allowed");
+                }
                 return factorial(inside);
             }
-            ts.putback(is_fac);
+            else
+                ts.putback(next);
             return inside;
         }
+        case Kind::pls:
+            return value(ts);
+        case Kind::mins:
+            return -1 * value(ts);
+        default: {
+            ts.putback(next);
+            double num = value(ts);
+            next = ts.get();
+            if (next.kind == Kind::fac) {
+                if (std::floor(num) != num) {
+                    throw std::runtime_error("factorial of non-integer not allowed");
+                }
+                return factorial(num);
+            }
+            ts.putback(next);
+            return num;
+        }
+    }
+}
+
+double value(Token_stream &ts)
+/*
+ * Value:
+ *   floating-point-value
+ *   varibale name
+ */
+{
+    Token next = ts.get();
+    switch (next.kind) {
+        case Kind::name:
+            return get_value(next.name);
+        case Kind::num:
+            return next.value;
         default:
-            throw std::runtime_error("invalid epxression");
+            throw std::runtime_error("invalid expression");
     }
 }
