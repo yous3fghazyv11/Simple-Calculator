@@ -3,7 +3,13 @@
 #include <cmath>
 #include <stdexcept>
 
-double expression(Token_stream &ts) {
+double expression(Token_stream &ts)
+/*
+ * Expression:
+ *   Term + Term*
+ *   Term - Term*
+ */    
+{
     double left = term(ts);
     Token next = ts.get();
     while (true) {
@@ -23,7 +29,15 @@ double expression(Token_stream &ts) {
     }
 }
 
-double term(Token_stream &ts) {
+double term(Token_stream &ts)
+/*
+ * Term:
+ *   Primary * Primary*
+ *   Primary / Primary*
+ *   Primary % Primary*
+ *   Primary ^ Primary*
+ */    
+{
     double left = primary(ts);
     Token next = ts.get();
     while (true) {
@@ -55,7 +69,17 @@ double term(Token_stream &ts) {
     }
 }
 
-double primary(Token_stream &ts) {
+double primary(Token_stream &ts)
+/*
+ * Primary:
+ *   Number
+ *   Number!
+ *   +Number
+ *   -Number
+ *   (Expression)
+ *   (Expression)!
+ */    
+{
     Token next = ts.get();
     switch (next.kind) {
         case Kind::num: {
@@ -71,16 +95,16 @@ double primary(Token_stream &ts) {
         case Kind::mins:
             return -1 * primary(ts);
         case Kind::obrace: {
-            double left = expression(ts);
+            double inside = expression(ts);
             next = ts.get();
             if (next.kind != Kind::cbrace)
                 throw std::runtime_error("')' expceted");
             Token is_fac = ts.get();
             if (is_fac.kind == Kind::fac) {
-                return factorial(left);
+                return factorial(inside);
             }
             ts.putback(is_fac);
-            return left;
+            return inside;
         }
         default:
             throw std::runtime_error("invalid epxression");
