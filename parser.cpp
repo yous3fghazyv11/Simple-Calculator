@@ -1,5 +1,6 @@
 #include "parser.h"
 #include "utils.h"
+#include <cmath>
 #include <stdexcept>
 
 double expression(Token_stream &ts) {
@@ -39,6 +40,14 @@ double term(Token_stream &ts) {
                 next = ts.get();
                 break;
             }
+            case Kind::mod: {
+                double val = primary(ts);
+                if (val == 0)
+                    throw std::runtime_error("divison by zero");
+                left = std::fmod(left, val);
+                next = ts.get();
+                break;
+            }
             default:
                 ts.putback(next);
                 return left;
@@ -64,9 +73,8 @@ double primary(Token_stream &ts) {
         case Kind::obrace: {
             double left = expression(ts);
             next = ts.get();
-            if (next.kind != Kind::cbrace) {
+            if (next.kind != Kind::cbrace)
                 throw std::runtime_error("')' expceted");
-            }
             Token is_fac = ts.get();
             if (is_fac.kind == Kind::fac) {
                 return factorial(left);

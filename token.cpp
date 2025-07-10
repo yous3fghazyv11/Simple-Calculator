@@ -34,6 +34,8 @@ Token Token_stream::get() {
             return Token(Kind::cbrace);
         case '!':
             return Token(Kind::fac);
+        case '%':
+            return Token(Kind::mod);
         case 'q':
             return Token(Kind::quit);
         case '0': // case of a digit
