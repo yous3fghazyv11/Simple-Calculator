@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <istream>
+#include <vector>
 
 enum class Kind {
     num,
@@ -37,9 +38,9 @@ class Token_stream {
     std::istream &in;      // a token stream tokenizes an input stream
     Token get();           // get a token from the stream
     void putback(Token t); // put a token back
-    Token_stream(std::istream &s) : in(s), buffer(Kind::quit), full(false) {}
+    Token_stream(std::istream &s) : in(s), buffer({}), full(false) {}
 
   private:
-    Token buffer;
+    std::vector<Token> buffer;
     bool full;
 };

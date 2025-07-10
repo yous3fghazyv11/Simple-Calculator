@@ -4,16 +4,14 @@
 #include <string>
 
 void Token_stream::putback(Token t) {
-    if (full)
-        throw std::runtime_error("putback into full buffer");
-    buffer = t;
-    full = true;
+    buffer.push_back(t);
 }
 
 Token Token_stream::get() {
-    if (full) {
-        full = false;
-        return buffer;
+    if (buffer.size() > 0) {
+        Token last = buffer.back();
+        buffer.pop_back();
+        return last;
     }
     char ch;
     in >> ch;
