@@ -6,6 +6,7 @@
 double expression(Token_stream &ts)
 /*
  * Expression:
+ *   Term
  *   Term + Term*
  *   Term - Term*
  */    
@@ -32,6 +33,7 @@ double expression(Token_stream &ts)
 double term(Token_stream &ts)
 /*
  * Term:
+ *   Primary
  *   Primary * Primary*
  *   Primary / Primary*
  *   Primary % Primary*
