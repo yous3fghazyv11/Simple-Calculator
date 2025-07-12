@@ -24,8 +24,7 @@ enum class Kind {
     // signaled by Token_stream::get() and used in main to check garbage after an expression
 };
 
-class Token {
-  public:
+struct Token {
     Kind kind;
     double value; // used only if kind == Kind::number
     std::string name; // used to represent tokens of type variable names
@@ -34,14 +33,11 @@ class Token {
     Token(Kind k, std::string n) : kind(k), value(0), name(n) {}
 };
 
-class Token_stream {
-  public:
+struct Token_stream {
     std::istream &in;      // a token stream tokenizes an input stream
     Token get();           // get a token from the stream
     void putback(Token t); // put a token back
     Token_stream(std::istream &s) : in(s), buffer({}), full(false) {}
-
-  private:
     std::vector<Token> buffer;
     bool full;
 };

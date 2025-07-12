@@ -2,8 +2,7 @@
 #include <string>
 #include <vector>
 
-class Var{
-public:
+struct Var{
     std::string name;
     double value;
     Var(std::string n, double val) : name(n), value(val) {}
