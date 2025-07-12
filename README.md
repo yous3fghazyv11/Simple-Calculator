@@ -36,7 +36,7 @@ you can use spaces however you see fit
 
 also the calculator gives reasonable error messages for bad expressions
 ```
-> # we removed the '(' at the end
+> # we removed the ')' at the end
 > 3 ^ ( ( 8 - 2 * 3 )!
 ')' expected
 > 2.2!
