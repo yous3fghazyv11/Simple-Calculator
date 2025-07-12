@@ -83,3 +83,10 @@ you can also assign to variables
 if you find yourself using a lot of variables, like for example `pi` or `e`, you can define them
 in `$HOME/.config/calc/calc.conf`, the syntax is the same for the REPL, and the calculator
 will evaluate the expressions in that file before it starts the REPL.
+### $HOME/.config/calc/calc.conf
+```
+# scientific constants
+let pi = 22/7
+let e = 2.71828
+let var_i_use_a_lot = 44.87
+```
