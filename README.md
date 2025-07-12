@@ -93,4 +93,4 @@ let var_i_use_a_lot = 44.87
 and the next time the calculator loads it will evaluate these expressions so that you can use
 them in your calculations without having to define them each time.
 
-<mark>TODO: Add unit tests for Parser</mark>
+## <mark>TODO:</mark> add support for functions
