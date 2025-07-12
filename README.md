@@ -93,4 +93,13 @@ let var_i_use_a_lot = 44.87
 and the next time the calculator loads it will evaluate these expressions so that you can use
 them in your calculations without having to define them each time.
 
-## <pre> ```sh # TODO: Add unit tests for Parser ``` </pre>
+## <mark>TODO:</mark> add support for functions
+the next step is going to be the ability to define functions:
+```
+> def f(x, y): x * y
+> 12 + f(3, 4)
+24
+> def g(x): x^2
+> 12 + f(3, g(2))
+24
+```
