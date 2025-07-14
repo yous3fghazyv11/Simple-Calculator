@@ -1,11 +1,3 @@
-/*
-   the input loop is pretty simple
-   first, we read a line from the input stream
-   then we make a string stream out of that line
-   then we make a Token_stream out of that string stream
-   then we feed that Token_stream to out statement() function
- */
-
 #include "parser.h"
 #include "token.h"
 #include "var.h"
@@ -15,37 +7,39 @@
 #include <sstream>
 #include <cstdlib>
 
-#define GREEN "\033[92m"
-#define RED "\033[33m"
-#define WHITE "\033[0m"
+namespace color {
+    constexpr char green[] = "\033[92m";
+    constexpr char red[] =  "\033[33m";
+    constexpr char white[] =  "\033[0m";
+};
 
 void repl() {
     std::cout << "type 'q' or 'quit' to exit\n";
-    for (std::string line; std::cout << "> " && std::getline(std::cin, line);) { // get line from the user
+    for (std::string line; std::cout << "> " && std::getline(std::cin, line);) {
         try {
-            std::stringstream line_buffer{line}; // turn that line into a string stream
-            Token_stream ts(line_buffer);        // turn that string stream (originally just input
-                                                 // line) into a token stream
+            std::stringstream line_buffer{line};
+            Token_stream ts(line_buffer);
+
             Token t = ts.get();
-            if (t.kind == Kind::quit) { // if the user types q
+            if (t.kind == Kind::quit) {
                 break;
             }
-            if (t.kind == Kind::eoe) { // if the user didn't type anything
+            if (t.kind == Kind::eoe) {
                 continue;
             }
-            if (t.kind == Kind::com) { // this line is a comment
+            if (t.kind == Kind::com) {
                 continue;
             }
-            ts.putback(t); // if none of the above then put it back to read a statement
+            ts.putback(t);
             double result = statement(ts);
-            if (ts.get().kind != Kind::eoe) { // make sure that there's no garbage after a statement
-                std::cerr << RED << "invalid expression\n" << WHITE;
+            if (ts.get().kind != Kind::eoe) {
+                std::cerr << color::red << "invalid expression\n" << color::green;
                 continue;
             }
             set_value("ans", result);
-            std::cout << GREEN << result << WHITE << '\n';
+            std::cout << color::green << result << color::white << '\n';
         } catch (std::exception &e) {
-            std::cerr << RED << e.what() << WHITE << '\n';
+            std::cerr << color::red << e.what() << color::white << '\n';
         }
     }
 }
@@ -60,27 +54,25 @@ void read_config() {
     }
     while (std::getline(file, line)) {
         try {
-            std::stringstream line_buffer{line}; // turn that line into a string stream
-            Token_stream ts(line_buffer);        // turn that string stream (originally just input line) into a token stream
+            std::stringstream line_buffer{line};
+            Token_stream ts(line_buffer);
             Token t = ts.get();
-            if (t.kind == Kind::com) { // this line is a comment
+            if (t.kind == Kind::com) {
                 continue;
-            } else if (t.kind == Kind::eoe) { // line is empty
+            } else if (t.kind == Kind::eoe) {
                 continue;
             } else {
                 ts.putback(t);
             }
             statement(ts);
-            // double result = statement(ts);
-            if (ts.get().kind != Kind::eoe) { // make sure that there's no garbage after the expression
-                std::cerr << RED << "error in config file: " << config_path << WHITE;
-                std::cerr << RED << "invalid expression: " << line << WHITE;
+
+            if (ts.get().kind != Kind::eoe) {
+                std::cerr << color::red << "error in config file: " << config_path << color::white;
+                std::cerr << color::red << "invalid expression: " << line << color::white;
                 continue;
             }
-            // std::cout << "expression: " << line << '\n';
-            // std::cout << "output: " << result << '\n';
         } catch (std::exception &e) {
-            std::cerr << RED << e.what() << WHITE << '\n';
+            std::cerr << color::red << e.what() << color::white << '\n';
         }
     }
 }
@@ -91,9 +83,9 @@ int main() try {
     repl();
     return 0;
 } catch (std::exception &e) {
-    std::cerr << RED << "Error: " << e.what() << WHITE << '\n';
+    std::cerr << color::red << "Error: " << e.what() << color::white << '\n';
     return 1;
 } catch (...) {
-    std::cerr << RED << "Unexpected error accured" << WHITE << '\n';
+    std::cerr << color::red << "Unexpected error accured" << color::white << '\n';
     return 2;
 }
