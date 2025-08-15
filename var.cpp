@@ -8,7 +8,7 @@ double get_value(const std::string& s) {
         if (v.name == s)
             return v.value;
     }
-    throw std::runtime_error("undefined variable: " + s);
+    throw std::runtime_error("undefined name: " + s);
 }
 
 void set_value(const std::string& s, double val) {
@@ -18,7 +18,7 @@ void set_value(const std::string& s, double val) {
             return;
         }
     }
-    throw std::runtime_error("undefined variable: " + s);
+    throw std::runtime_error("undefined name: " + s);
 }
 
 double define_var(const std::string& name, double val) {
